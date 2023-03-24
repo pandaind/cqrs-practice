@@ -51,6 +51,7 @@ public class AxonConfig {
     public TokenStore tokenStore(Serializer serializer) {
         return MongoTokenStore
                 .builder()
+                .serializer(JacksonSerializer.defaultSerializer())
                 .mongoTemplate(axonMongoTemplate())
                 .serializer(serializer)
                 .build();

@@ -1,4 +1,4 @@
-package com.demo.user.query;
+package com.demo.user;
 
 import com.demo.user.core.config.AxonConfig;
 import org.springframework.boot.SpringApplication;
@@ -6,11 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(AxonConfig.class)
-public class UserQueryApiApplication {
+@Import({AxonConfig.class})
+public class UserCmdApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserQueryApiApplication.class, args);
+        SpringApplication.run(UserCmdApiApplication.class, args);
     }
 
 }

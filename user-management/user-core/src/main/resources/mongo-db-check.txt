@@ -1,0 +1,2 @@
+use axonframework;
+db.getCollection("domainevents").find({});
