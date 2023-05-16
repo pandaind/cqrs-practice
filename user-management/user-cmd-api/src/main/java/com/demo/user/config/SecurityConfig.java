@@ -15,7 +15,9 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().hasRole("WRITE_PRIVILEGE"))
+                .authorizeHttpRequests(
+                    authorize -> authorize.anyRequest().hasRole("WRITE_PRIVILEGE")
+                )
                 .oauth2ResourceServer()
                 .jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
         return httpSecurity.build();
