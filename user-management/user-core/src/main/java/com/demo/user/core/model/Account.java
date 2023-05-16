@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.data.mongodb.core.index.Indexed;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Account {
     @Size(min = 2, message = "username must have a minimum of 2 characters")
+    @Indexed(unique=true)
     private String username;
     @Size(min = 7, message = "username must have a minimum of 7 characters")
     private String password;

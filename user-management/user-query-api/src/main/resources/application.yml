@@ -1,10 +1,18 @@
 server:
   port: 8082
 
+debug: true
+
 spring:
   data:
     mongodb:
       host: localhost
       port: 27017
       database: user
+      auto-index-creation: true
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8083

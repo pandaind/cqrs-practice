@@ -43,14 +43,15 @@ import java.time.Duration;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
 @Configuration
-public class SecurityConfig {
+public class AuthServerConfig {
 
+    private static final String ROLES = "roles";
+    
     private final UserService userService;
 
     @Autowired
-    public SecurityConfig(UserService userService) {
+    public AuthServerConfig(UserService userService) {
         this.userService = userService;
     }
 
@@ -60,18 +61,17 @@ public class SecurityConfig {
             throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
+                .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
         http
                 // Redirect to the login page when not authenticated from the
                 // authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(
-                                new LoginUrlAuthenticationEntryPoint("/login"))
-                )
+                                new LoginUrlAuthenticationEntryPoint("/login")))
                 // Accept access tokens for User Info and/or Client Registration
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
-        return http.build();
+        return http.userDetailsService(userService).formLogin(Customizer.withDefaults()).build();
     }
 
     @Bean
@@ -80,8 +80,7 @@ public class SecurityConfig {
             throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
                 .formLogin(Customizer.withDefaults());
@@ -90,12 +89,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder encoder(){
+    public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(12);
     }
 
     @Bean
-    public DaoAuthenticationProvider getAuthenticationProvider(){
+    public DaoAuthenticationProvider getAuthenticationProvider() {
         var authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userService);
         authenticationProvider.setPasswordEncoder(encoder());
@@ -107,14 +106,16 @@ public class SecurityConfig {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("oauth-client")
                 .clientSecret(encoder().encode("oauth-secret"))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .redirectUri("http://127.0.0.1:8083/login/oauth2/code/user-client-oidc")
+                .redirectUri("https://oidcdebugger.com/debug")
                 .redirectUri("http://127.0.0.1:8083/authorized")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
+                .scope(OidcScopes.EMAIL)
                 .scope("user.read")
                 .scope("user.write")
                 .tokenSettings(tokenSettings())
@@ -125,7 +126,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public TokenSettings tokenSettings(){
+    public TokenSettings tokenSettings() {
         return TokenSettings.builder().accessTokenTimeToLive(Duration.ofMinutes(30L)).build();
     }
 
@@ -148,8 +149,7 @@ public class SecurityConfig {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
             keyPair = keyPairGenerator.generateKeyPair();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
         return keyPair;
@@ -166,13 +166,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(){
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
         return context -> {
             if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
                 var principal = context.getPrincipal();
                 var authorities = principal.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                                            .map(authority -> "ROLE_".concat(authority))
                         .collect(Collectors.toSet());
-                context.getClaims().claim("roles", authorities);
+                context.getClaims().claim(ROLES, authorities);
             }
         };
     }
