@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * User Service
+ */
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository repository;
@@ -18,10 +21,16 @@ public class UserService implements UserDetailsService {
     }
 
 
+    /**
+     * Load user by username
+     * @param username username
+     * @return UserDetails
+     * @throws UsernameNotFoundException UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = repository.findByUsername(username);
-
+        // If user is not found, throw UsernameNotFoundException
         if (user.isEmpty()){
             throw new UsernameNotFoundException("Incorrect Username or password!");
         }

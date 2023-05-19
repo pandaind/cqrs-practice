@@ -16,7 +16,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests(
-                    authorize -> authorize.anyRequest().hasRole("WRITE_PRIVILEGE")
+                    authorize -> //authorize.anyRequest().hasRole("WRITE_PRIVILEGE") // for ROLE
+                        authorize.anyRequest().hasAuthority("SCOPE_user.write") // for SCOPE
                 )
                 .oauth2ResourceServer()
                 .jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
@@ -26,8 +27,9 @@ public class SecurityConfig {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+        // jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles"); // ROLE
+        // jwtGrantedAuthoritiesConverter.setAuthorityPrefix(""); // ROLE
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("scope"); // SCOPE
 
         var jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

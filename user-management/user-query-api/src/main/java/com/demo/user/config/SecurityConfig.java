@@ -2,7 +2,6 @@ package com.demo.user.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
@@ -17,13 +16,13 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
-                .authorizeHttpRequests(authorize -> 
-                        authorize.anyRequest().hasRole("READ_PRIVILEGE") // for Role
-                        // authorize.anyRequest().hasAuthority("SCOPE_user.read") // for SCOPE
+                .authorizeHttpRequests(authorize ->
+                                //authorize.anyRequest().hasRole("READ_PRIVILEGE") // for Role
+                                authorize.anyRequest().hasAuthority("SCOPE_user.read") // for SCOPE
                         /* authorize.requestMatchers(HttpMethod.GET, "/**").hasAuthority("READ_PRIVILEGE")
                                 .requestMatchers(HttpMethod.GET, "/**").hasAuthority("SCOPE_user.write")
                                     .anyRequest().authenticated() */
-                    )
+                )
                 .oauth2ResourceServer()
                 .jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
         return httpSecurity.build();
@@ -32,7 +31,7 @@ public class SecurityConfig {
     /*
      * For Role
      */
-    @Bean
+ /*   @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
@@ -43,10 +42,10 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setPrincipalClaimName(JwtClaimNames.SUB);
 
         return jwtAuthenticationConverter;
-    }
+    }*/
 
     // for SCOPE
-    /* @Bean
+    @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
@@ -56,5 +55,5 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setPrincipalClaimName(JwtClaimNames.SUB);
 
         return jwtAuthenticationConverter;
-    } */
+    }
 }
