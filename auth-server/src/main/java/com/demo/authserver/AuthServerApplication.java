@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -25,12 +24,9 @@ public class AuthServerApplication implements CommandLineRunner {
 
     private final JpaRegisteredClientRepository jpaRegisteredClientRepository;
 
-    private final PasswordEncoder encoder;
-
     @Autowired
-    public AuthServerApplication(JpaRegisteredClientRepository jpaRegisteredClientRepository, PasswordEncoder encoder) {
+    public AuthServerApplication(JpaRegisteredClientRepository jpaRegisteredClientRepository) {
         this.jpaRegisteredClientRepository = jpaRegisteredClientRepository;
-        this.encoder = encoder;
     }
 
     public static void main(String[] args) {
@@ -39,31 +35,24 @@ public class AuthServerApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        RegisteredClient adminClient = getClient("client-admin", "admin-secret", "client.create");
-        RegisteredClient userClient = getClient("client-user", "user-secret", "client.read");
-
+        RegisteredClient adminClient = getClient();
 
         jpaRegisteredClientRepository.deleteByClientId(adminClient.getClientId());
-        jpaRegisteredClientRepository.deleteByClientId(userClient.getClientId());
 
         jpaRegisteredClientRepository.save(adminClient);
-        jpaRegisteredClientRepository.save(userClient);
     }
 
     /**
      * Create a RegisteredClient object
      *
-     * @param clientId     client id
-     * @param rawPassword  raw password
-     * @param scope        scope
      * @return RegisteredClient
      */
-    private RegisteredClient getClient(String clientId, String rawPassword, String scope) {
+    private RegisteredClient getClient() {
         return RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId(clientId)
-                .clientName(clientId)
+                .clientId("client-admin")
+                .clientName("client-admin")
                 .clientIdIssuedAt(Instant.now())
-                .clientSecret(encoder.encode(rawPassword))
+                .clientSecret("admin-secret")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
@@ -71,7 +60,10 @@ public class AuthServerApplication implements CommandLineRunner {
                 .redirectUri("http://127.0.0.1:8083/authorized")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
-                .scope(scope)
+                .scope("client.create")
+                .scope("client.update")
+                .scope("client.delete")
+                .scope("client.read")
                 .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofMinutes(30L)).build())
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
