@@ -16,12 +16,16 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcClientRegistrationAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcUserInfoAuthenticationContext;
 import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcUserInfoAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -74,14 +78,14 @@ public class AuthServerConfig {
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .registeredClientRepository(jpaRegisteredClientRepository)  // RegisteredClientRepository
                 .oidc((oidc) -> oidc
-                        .userInfoEndpoint((userInfo) -> userInfo
-                                .userInfoMapper(userInfoMapper())
-                        )
-                        //.userInfoEndpoint(Customizer.withDefaults())
-                        .clientRegistrationEndpoint((clientRegistration) ->
-                                clientRegistration.authenticationProvider(getAuthenticationProvider())
-                        )
-                        //.clientRegistrationEndpoint(Customizer.withDefaults())
+                                .userInfoEndpoint((userInfo) -> userInfo
+                                        .userInfoMapper(userInfoMapper())
+                                )
+                                //.userInfoEndpoint(Customizer.withDefaults())
+                                /*.clientRegistrationEndpoint((clientRegistration) ->
+                                        clientRegistration.authenticationProvider(getAuthenticationProvider())
+                                )*/
+                                .clientRegistrationEndpoint(Customizer.withDefaults())
                 ); // Enable OpenID Connect 1.0
         http
                 // Redirect to the login page when not authenticated from the
@@ -134,11 +138,11 @@ public class AuthServerConfig {
      *
      * @return the password encoder
      */
-   /* @Bean
+    @Bean
     public PasswordEncoder encoder() {
-        return NoOpPasswordEncoder.getInstance();
-        //return new BCryptPasswordEncoder(12);
-    }*/
+        //return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder(12);
+    }
 
     /**
      * Data access object authentication provider.
@@ -149,9 +153,10 @@ public class AuthServerConfig {
     public DaoAuthenticationProvider getAuthenticationProvider() {
         var authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userService);
-        //authenticationProvider.setPasswordEncoder(encoder());
+        authenticationProvider.setPasswordEncoder(encoder());
         return authenticationProvider;
     }
+
 
     /**
      * Registered client repository.

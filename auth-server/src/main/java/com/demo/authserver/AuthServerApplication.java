@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -24,9 +25,12 @@ public class AuthServerApplication implements CommandLineRunner {
 
     private final JpaRegisteredClientRepository jpaRegisteredClientRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public AuthServerApplication(JpaRegisteredClientRepository jpaRegisteredClientRepository) {
+    public AuthServerApplication(JpaRegisteredClientRepository jpaRegisteredClientRepository, PasswordEncoder passwordEncoder) {
         this.jpaRegisteredClientRepository = jpaRegisteredClientRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public static void main(String[] args) {
@@ -52,7 +56,7 @@ public class AuthServerApplication implements CommandLineRunner {
                 .clientId("client-admin")
                 .clientName("client-admin")
                 .clientIdIssuedAt(Instant.now())
-                .clientSecret("admin-secret")
+                .clientSecret(passwordEncoder.encode("admin-secret"))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
