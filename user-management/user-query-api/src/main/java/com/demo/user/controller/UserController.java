@@ -26,7 +26,7 @@ public class UserController {
         this.queryGateway = queryGateway;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<UserLookupResponse> getAllUsers() {
         try {
             var query = new FindAllUserQuery();
