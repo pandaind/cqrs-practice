@@ -29,3 +29,34 @@ spring:
           predicates:
             - Path=/api/v1/user/**
 
+
+        - id: bank-cmd-open
+          uri: http://localhost:9091/api/v1/bank/open/**
+          order: 1
+          predicates:
+            - Path=/api/v1/bank/open/**
+
+        - id: bank-cmd-deposit
+          uri: http://localhost:9091/api/v1/bank/deposit/**
+          order: 2
+          predicates:
+            - Path=/api/v1/bank/deposit/**
+
+        - id: bank-cmd-withdraw
+          uri: http://localhost:9091/api/v1/bank/withdraw/**
+          order: 3
+          predicates:
+            - Path=/api/v1/bank/withdraw/**
+
+        - id: bank-cmd-close
+          uri: http://localhost:9091/api/v1/bank/close/**
+          order: 4
+          predicates:
+            - Path=/api/v1/bank/close/**
+
+        - id: bank-query
+          uri: http://localhost:9092/api/v1/bank/**
+          order: 5
+          predicates:
+            - Path=/api/v1/bank/**
+

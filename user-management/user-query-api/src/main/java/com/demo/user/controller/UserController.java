@@ -59,7 +59,6 @@ public class UserController {
         } catch (Exception e) {
             var safeErrorMessage = "Failed to complete search user request";
             log.error("Error {}", safeErrorMessage);
-            e.printStackTrace();
             return new ResponseEntity<>(new UserLookupResponse(safeErrorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

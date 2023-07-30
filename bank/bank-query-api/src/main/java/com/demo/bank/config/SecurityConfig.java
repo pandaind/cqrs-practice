@@ -1,4 +1,4 @@
-package com.demo.user.config;
+package com.demo.bank.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                     authorize -> //authorize.anyRequest().hasRole("WRITE_PRIVILEGE") // for ROLE
-                        authorize.anyRequest().hasAuthority("SCOPE_user.write") // for SCOPE
+                        authorize.anyRequest().hasAuthority("SCOPE_bank.read") // for SCOPE
                 )
                 .oauth2ResourceServer(resourceServerConfigurer -> resourceServerConfigurer
                         .jwt(jwtConfigurer ->

@@ -16,7 +16,7 @@ docker run -it -d --name mongo-container \
 ~~~sh
 docker run -it -d --name mysql-container \
 -p 3306:3306 \
--e MYSQL_ROOT_PASSWORD=springbankRootPsw \
+-e MYSQL_ROOT_PASSWORD=root \
 --restart always \
 -v mysql_data_container:/var/lib/mysql  \
 mysql:latest

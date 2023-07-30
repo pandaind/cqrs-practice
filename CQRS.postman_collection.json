@@ -1,0 +1,2032 @@
+{
+	"info": {
+		"_postman_id": "b781a8b0-f323-4c51-8074-edee1f7ebed5",
+		"name": "CQRS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9818421"
+	},
+	"item": [
+		{
+			"name": "User CMD",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required field - message\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.message).to.exist.and.to.be.a('string');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"pm.test(\"User has been successfully registered\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.message).to.equal(\"User successfully registered\");",
+									"});",
+									"",
+									"pm.test(\"Response has the required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"});",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\": {\r\n        \"firstname\": \"john\",\r\n        \"lastname\": \"doe\",\r\n        \"emailAddress\": \"john@doe.com\",\r\n        \"account\": {\r\n            \"username\": \"john\",\r\n            \"password\": \"P@$$w0rd\",\r\n            \"roles\": [\r\n                \"READ_PRIVILEGE\",\r\n                \"WRITE_PRIVILEGE\"\r\n            ]\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{user-write-url}}/api/v1/user/register",
+							"host": [
+								"{{user-write-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\": {\r\n        \"firstname\": \"mike\",\r\n        \"lastname\": \"doe\",\r\n        \"emailAddress\": \"mike@doe.com\",\r\n        \"account\": {\r\n            \"username\": \"mike\",\r\n            \"password\": \"P@$$w0rd\",\r\n            \"roles\": [\r\n                \"READ_PRIVILEGE\",\r\n                \"WRITE_PRIVILEGE\"\r\n            ]\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{user-write-url}}/api/v1/user/update/{{john-id}}",
+							"host": [
+								"{{user-write-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"update",
+								"{{john-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{user-write-url}}/api/v1/user/delete/{{john-id}}",
+							"host": [
+								"{{user-write-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"delete",
+								"{{john-id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "tokenName",
+						"value": "user-write",
+						"type": "string"
+					},
+					{
+						"key": "scope",
+						"value": "{{user-write-scope}}",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "{{user-write-secret}}",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "{{user-write-id}}",
+						"type": "string"
+					},
+					{
+						"key": "refreshRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "authRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://127.0.0.1:8083/authorized",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "client_credentials",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "http://localhost:8083/oauth2/authorize",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "body",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "{{auth-server-url}}/oauth2/token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User Query",
+			"item": [
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user-read-url}}/api/v1/user",
+							"host": [
+								"{{user-read-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user-read-url}}/api/v1/user/{{john-id}}",
+							"host": [
+								"{{user-read-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"{{john-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Stores the first user's id in an environment or global variable",
+									"var responseBody = pm.response.json();",
+									"var userId = responseBody.users[0].id;",
+									"pm.environment.set(\"john-id\", userId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user-read-url}}/api/v1/user/search/john",
+							"host": [
+								"{{user-read-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"search",
+								"john"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "tokenName",
+						"value": "user-read",
+						"type": "string"
+					},
+					{
+						"key": "scope",
+						"value": "{{user-read-scope}}",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "{{user-read-secret}}",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "{{user-read-id}}",
+						"type": "string"
+					},
+					{
+						"key": "refreshRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "authRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://127.0.0.1:8083/authorized",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "client_credentials",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "http://localhost:8083/oauth2/authorize",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "body",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "{{auth-server-url}}/oauth2/token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Client Credential",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessTokenUrl",
+									"value": "{{auth-server-url}}/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "CaosB5Z1L8U-rhkJLET4k4uXLXDny2n_13U4r9SnbzMFQyRJ_U1JR1L8SOo6_tiV",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "-61oF-TuIxQoHJHa5SW0Y6c9rcD7ttttwkDYnRMB4po",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "user.read",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "Token Name",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "refresh_token",
+									"type": "any"
+								},
+								{
+									"key": "expires_in",
+									"value": 299,
+									"type": "number"
+								},
+								{
+									"key": "token_id",
+									"value": "95084a97-1341-4fdd-989c-15414011d01d",
+									"type": "string"
+								},
+								{
+									"key": "timestamp",
+									"value": 1684170244922,
+									"type": "number"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8083/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://127.0.0.1:8083/authorized",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "id",
+									"value": "request/43baae75-40de-46ec-8110-167cc6c49e49/e25a6e33-d7ba-4f48-8a32-2a499af41cae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{auth-server-url}}/oauth2/token",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Auth Code",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "BzMRi_24au_VbAhG_vsCpZRxHYyIjrzAmrNva9BsAII",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "user.read",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "query-secret",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://127.0.0.1:8083/login/oauth2/code/user-client-oidc",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "Token Name",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "refresh_token",
+									"type": "any"
+								},
+								{
+									"key": "expires_in",
+									"value": 299,
+									"type": "number"
+								},
+								{
+									"key": "token_id",
+									"value": "95084a97-1341-4fdd-989c-15414011d01d",
+									"type": "string"
+								},
+								{
+									"key": "timestamp",
+									"value": 1684170244922,
+									"type": "number"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8083/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:8083/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "id",
+									"value": "request/43baae75-40de-46ec-8110-167cc6c49e49/e25a6e33-d7ba-4f48-8a32-2a499af41cae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{auth-server-url}}/oauth2/token",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "Get Client By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiJkNWI0NmM0MC05N2NkLTRkYjUtODUyMS1lN2YyOGUwZmNlOTEiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjbGllbnQtYWRtaW4iLCJhdWQiOiJjbGllbnQtYWRtaW4iLCJuYmYiOjE2ODQ1NDEwMDgsInNjb3BlIjpbImNsaWVudC5yZWFkIl0sInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgzIiwiZXhwIjoxNjg0NTQyODA4LCJpYXQiOjE2ODQ1NDEwMDgsInVzZXIiOiJjbGllbnQtYWRtaW4ifQ.cqRprUpY15G5gRMXCSmkq92yJ6bejyhiHBYH-BRm7S8T5zV8F1XpZYRhqCtxzSprdMf5wpnVld5QBfpSKT9xnBhlWFt1cNdkCxCN37ZHFi6O9QMivXLzLqYEWGKqf_B5aNcBjnkgcO59DcOwEJUxX2IPlDiqEw3uJqEOWY-3ACB7GJAbY90QDrCeEZJVzqVHD15DhQVMHPc9nh8Dd_o_5_zkJvdDcpD6s-3kTbjpBOJRR60bDTRRcBPwIRpTnf-Sq0Irga67XDNSt-PS_D_ou02nX7in8syJrtVyyZxn3vo4Bw4aYIHoMx_L9r4K94kCNCrIIYh7wZqMQiU-8M9zaQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auth-server-url}}/clientinfo?client_id=client-p7j2UdGr5IPimJJCwX3hVq5YZbA1lHydT9imZEKVurA",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"clientinfo"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "client-p7j2UdGr5IPimJJCwX3hVq5YZbA1lHydT9imZEKVurA"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Write Client",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"    pm.expect(pm.response.code).to.equal(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"client_id is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.client_id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"client_id should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"client_secret is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.client_secret).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"redirect_uris is an array\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.redirect_uris).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var clientId = jsonData.client_id;",
+									"    var clientSecret = jsonData.client_secret;",
+									"    pm.environment.set(\"user-write-id\", clientId);",
+									"    pm.environment.set(\"user-write-secret\", clientSecret);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "scope",
+									"value": "{{admin-write-scope}}",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "{{admin-client-secret}}",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "{{admin-client-id}}",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "{{auth-server-url}}/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "Token Name",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "refresh_token",
+									"type": "any"
+								},
+								{
+									"key": "expires_in",
+									"value": 299,
+									"type": "number"
+								},
+								{
+									"key": "token_id",
+									"value": "95084a97-1341-4fdd-989c-15414011d01d",
+									"type": "string"
+								},
+								{
+									"key": "timestamp",
+									"value": 1684170244922,
+									"type": "number"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8083/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://127.0.0.1:8083/authorized",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "id",
+									"value": "request/43baae75-40de-46ec-8110-167cc6c49e49/e25a6e33-d7ba-4f48-8a32-2a499af41cae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "user-query",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"userquery\",\n    \"client_name\": \"userquery\",\n    \"redirect_uris\": [\n        \"{{auth-server-url}}/authorized\",\n        \"{{auth-server-url}}/login/oauth2/code/user-client-oidc\"\n    ],\n    \"grant_types\": [\n        \"refresh_token\",\n        \"client_credentials\",\n        \"authorization_code\"\n    ],\n    \"scope\": \"openid profile {{user-write-scope}} email\",\n    \"token_endpoint_auth_method\": \"client_secret_post\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth-server-url}}/clientinfo",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"clientinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Bank Write Client",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"    pm.expect(pm.response.code).to.equal(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"client_id is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.client_id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"client_id should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"client_secret is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.client_secret).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"redirect_uris is an array\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.redirect_uris).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var clientId = jsonData.client_id;",
+									"    var clientSecret = jsonData.client_secret;",
+									"    pm.environment.set(\"bank-write-id\", clientId);",
+									"    pm.environment.set(\"bank-write-secret\", clientSecret);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "scope",
+									"value": "{{admin-write-scope}}",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "{{admin-client-secret}}",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "{{admin-client-id}}",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "{{auth-server-url}}/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "Token Name",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "refresh_token",
+									"type": "any"
+								},
+								{
+									"key": "expires_in",
+									"value": 299,
+									"type": "number"
+								},
+								{
+									"key": "token_id",
+									"value": "95084a97-1341-4fdd-989c-15414011d01d",
+									"type": "string"
+								},
+								{
+									"key": "timestamp",
+									"value": 1684170244922,
+									"type": "number"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8083/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://127.0.0.1:8083/authorized",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "id",
+									"value": "request/43baae75-40de-46ec-8110-167cc6c49e49/e25a6e33-d7ba-4f48-8a32-2a499af41cae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "user-query",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"bank\",\n    \"client_name\": \"bank\",\n    \"redirect_uris\": [\n        \"{{auth-server-url}}/authorized\",\n        \"{{auth-server-url}}/login/oauth2/code/user-client-oidc\"\n    ],\n    \"grant_types\": [\n        \"refresh_token\",\n        \"client_credentials\",\n        \"authorization_code\"\n    ],\n    \"scope\": \"openid profile {{bank-write-scope}} email\",\n    \"token_endpoint_auth_method\": \"client_secret_post\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth-server-url}}/clientinfo",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"clientinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Read Client",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"    pm.expect(pm.response.code).to.equal(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"client_id is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.client_id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"client_id should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"client_secret is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.client_secret).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"redirect_uris is an array\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.redirect_uris).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var clientId = jsonData.client_id;",
+									"    var clientSecret = jsonData.client_secret;",
+									"    pm.environment.set(\"user-read-id\", clientId);",
+									"    pm.environment.set(\"user-read-secret\", clientSecret);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "scope",
+									"value": "{{admin-write-scope}}",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "{{admin-client-secret}}",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "{{admin-client-id}}",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "{{auth-server-url}}/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "Token Name",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "refresh_token",
+									"type": "any"
+								},
+								{
+									"key": "expires_in",
+									"value": 299,
+									"type": "number"
+								},
+								{
+									"key": "token_id",
+									"value": "95084a97-1341-4fdd-989c-15414011d01d",
+									"type": "string"
+								},
+								{
+									"key": "timestamp",
+									"value": 1684170244922,
+									"type": "number"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8083/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://127.0.0.1:8083/authorized",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "id",
+									"value": "request/43baae75-40de-46ec-8110-167cc6c49e49/e25a6e33-d7ba-4f48-8a32-2a499af41cae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "user-query",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"userquery\",\n    \"client_name\": \"userquery\",\n    \"redirect_uris\": [\n        \"{{auth-server-url}}/authorized\",\n        \"{{auth-server-url}}/login/oauth2/code/user-client-oidc\"\n    ],\n    \"grant_types\": [\n        \"refresh_token\",\n        \"client_credentials\",\n        \"authorization_code\"\n    ],\n    \"scope\": \"openid profile {{user-read-scope}} email\",\n    \"token_endpoint_auth_method\": \"client_secret_post\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth-server-url}}/clientinfo",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"clientinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Bank Read Client",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"    pm.expect(pm.response.code).to.equal(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"client_id is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.client_id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"client_id should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"client_secret is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.client_secret).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"redirect_uris is an array\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.redirect_uris).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var clientId = jsonData.client_id;",
+									"    var clientSecret = jsonData.client_secret;",
+									"    pm.environment.set(\"bank-read-id\", clientId);",
+									"    pm.environment.set(\"bank-read-secret\", clientSecret);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "scope",
+									"value": "{{admin-write-scope}}",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "{{admin-client-secret}}",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "{{admin-client-id}}",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "{{auth-server-url}}/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "Token Name",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "refresh_token",
+									"type": "any"
+								},
+								{
+									"key": "expires_in",
+									"value": 299,
+									"type": "number"
+								},
+								{
+									"key": "token_id",
+									"value": "95084a97-1341-4fdd-989c-15414011d01d",
+									"type": "string"
+								},
+								{
+									"key": "timestamp",
+									"value": 1684170244922,
+									"type": "number"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8083/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://127.0.0.1:8083/authorized",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "id",
+									"value": "request/43baae75-40de-46ec-8110-167cc6c49e49/e25a6e33-d7ba-4f48-8a32-2a499af41cae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "user-query",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"bank\",\n    \"client_name\": \"bank\",\n    \"redirect_uris\": [\n        \"{{auth-server-url}}/authorized\",\n        \"{{auth-server-url}}/login/oauth2/code/user-client-oidc\"\n    ],\n    \"grant_types\": [\n        \"refresh_token\",\n        \"client_credentials\",\n        \"authorization_code\"\n    ],\n    \"scope\": \"openid profile {{bank-read-scope}} email\",\n    \"token_endpoint_auth_method\": \"client_secret_post\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth-server-url}}/clientinfo",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"clientinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client Create Token",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessTokenUrl",
+									"value": "{{auth-server-url}}/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "admin-secret",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "client-admin",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "client.create",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "accessToken",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://127.0.0.1:8083/login/oauth2/code/user-client-oidc",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "Token Name",
+									"type": "string"
+								},
+								{
+									"key": "refresh_token",
+									"type": "any"
+								},
+								{
+									"key": "expires_in",
+									"value": 299,
+									"type": "number"
+								},
+								{
+									"key": "token_id",
+									"value": "95084a97-1341-4fdd-989c-15414011d01d",
+									"type": "string"
+								},
+								{
+									"key": "timestamp",
+									"value": 1684170244922,
+									"type": "number"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8083/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "id",
+									"value": "request/43baae75-40de-46ec-8110-167cc6c49e49/e25a6e33-d7ba-4f48-8a32-2a499af41cae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auth-server-url}}/oauth2/token",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client Read Token",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessTokenUrl",
+									"value": "{{auth-server-url}}/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "client.read",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "admin-secret",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "client-admin",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "accessToken",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://127.0.0.1:8083/login/oauth2/code/user-client-oidc",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "Token Name",
+									"type": "string"
+								},
+								{
+									"key": "refresh_token",
+									"type": "any"
+								},
+								{
+									"key": "expires_in",
+									"value": 299,
+									"type": "number"
+								},
+								{
+									"key": "token_id",
+									"value": "95084a97-1341-4fdd-989c-15414011d01d",
+									"type": "string"
+								},
+								{
+									"key": "timestamp",
+									"value": 1684170244922,
+									"type": "number"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8083/oauth2/authorize",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "id",
+									"value": "request/43baae75-40de-46ec-8110-167cc6c49e49/e25a6e33-d7ba-4f48-8a32-2a499af41cae",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auth-server-url}}/oauth2/token",
+							"host": [
+								"{{auth-server-url}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bank CMD",
+			"item": [
+				{
+					"name": "Open Bank Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Stores the id in an environment or global variable",
+									"var responseJSON = pm.response.json();",
+									"var id = responseJSON.id;",
+									"pm.environment.set(\"john-account\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accountHolderId\": \"{{john-id}}\",\n    \"accountType\": \"CURRENT\",\n    \"openingBalance\": 100.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bank-write-url}}/api/v1/bank/open",
+							"host": [
+								"{{bank-write-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank",
+								"open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deposit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 50.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bank-write-url}}/api/v1/bank/deposit/{{john-account}}",
+							"host": [
+								"{{bank-write-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank",
+								"deposit",
+								"{{john-account}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 50.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bank-write-url}}/api/v1/bank/withdraw/{{john-account}}",
+							"host": [
+								"{{bank-write-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank",
+								"withdraw",
+								"{{john-account}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Close Bank Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bank-write-url}}/api/v1/bank/close/{{john-account}}",
+							"host": [
+								"{{bank-write-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank",
+								"close",
+								"{{john-account}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "tokenName",
+						"value": "bank-write",
+						"type": "string"
+					},
+					{
+						"key": "scope",
+						"value": "{{bank-write-scope}}",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "{{bank-write-secret}}",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "{{bank-write-id}}",
+						"type": "string"
+					},
+					{
+						"key": "refreshRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "authRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://127.0.0.1:8083/authorized",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "client_credentials",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "http://localhost:8083/oauth2/authorize",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "body",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "{{auth-server-url}}/oauth2/token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Bank Query",
+			"item": [
+				{
+					"name": "Get All Accounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bank-read-url}}/api/v1/bank",
+							"host": [
+								"{{bank-read-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bank-read-url}}/api/v1/bank/{{john-account}}",
+							"host": [
+								"{{bank-read-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank",
+								"{{john-account}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Accounts By Holder Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bank-read-url}}/api/v1/bank/holder/{{john-id}}",
+							"host": [
+								"{{bank-read-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank",
+								"holder",
+								"{{john-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account By Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bank-read-url}}/api/v1/bank/balance/GREATER_THAN/75",
+							"host": [
+								"{{bank-read-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bank",
+								"balance",
+								"GREATER_THAN",
+								"75"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "tokenName",
+						"value": "bank-read",
+						"type": "string"
+					},
+					{
+						"key": "refreshRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "authRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "scope",
+						"value": "{{bank-read-scope}}",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://127.0.0.1:8083/authorized",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "client_credentials",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "{{bank-read-secret}}",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "{{bank-read-id}}",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "http://localhost:8083/oauth2/authorize",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "body",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "{{auth-server-url}}/oauth2/token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
